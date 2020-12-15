@@ -7,17 +7,17 @@ export const AuthContext = React.createContext({});
 //const cookies = new Cookies();
 
 export default function AuthProvider(props) {
-  //const getToken = localStorage.getItem('token');
+  const getToken = localStorage.getItem('token');
 
-  //const getTokenExpireAt = localStorage.getItem('expire_at');
+  const getTokenExpireAt = localStorage.getItem('expire_at');
 
-  //const isTokenExpired = getTokenExpireAt < Date.now() / 1000;
+  const isTokenExpired = getTokenExpireAt < Date.now() / 1000;
 
-  const [isAuthenticated, setIsAuthenticated] = useState(true);
 
   // const [isAuthenticated, setIsAuthenticated] = useState(
   //   !!getToken && !isTokenExpired
   // );
+  const [isAuthenticated, setIsAuthenticated] = useState(true);
 
   // const login = response => {
   //   if (response.status === 200 && response.data.token) {
