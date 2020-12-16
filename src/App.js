@@ -4,13 +4,21 @@ import {BrowserRouter as Router, Route} from 'react-router-dom';
 import Routes from "./Routes";
 import RouteProvider from "./contexts/RouteProvider";
 import AuthProvider from "./contexts/AuthProvider";
+import { SnackbarProvider } from "notistack";
 
 function App() {
   return (
     <div className="App">
       <AuthProvider>
         <RouteProvider>
-          <Routes />
+          <SnackbarProvider
+            anchorOrigin={{
+              vertical: "bottom",
+              horizontal: "right",
+            }}
+          >
+            <Routes />
+          </SnackbarProvider>
         </ RouteProvider>
       </ AuthProvider>
     </div>
