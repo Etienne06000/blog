@@ -66,7 +66,7 @@ function LoginPage(props) {
     executePost
   ] = useAxios(
     {
-      url: 'https://api.blog.local/login',
+      url: '/login',
       method: 'POST'
     },
     { manual: true }

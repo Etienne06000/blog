@@ -4,6 +4,7 @@ import {BrowserRouter as Router, Route} from 'react-router-dom';
 import Routes from "./Routes";
 import RouteProvider from "./contexts/RouteProvider";
 import AuthProvider from "./contexts/AuthProvider";
+import "./constants/API";
 import { SnackbarProvider } from "notistack";
 
 function App() {
