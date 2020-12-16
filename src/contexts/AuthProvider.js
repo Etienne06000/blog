@@ -1,10 +1,10 @@
-import React, { useContext, useState } from 'react';
-//import decode from 'jwt-decode';
-//import Cookies from 'universal-cookie';
+import React, { useState } from 'react';
+import decode from 'jwt-decode';
+import Cookies from 'universal-cookie';
 
 export const AuthContext = React.createContext({});
 
-//const cookies = new Cookies();
+const cookies = new Cookies();
 
 export default function AuthProvider(props) {
   const getToken = localStorage.getItem('token');
@@ -14,69 +14,66 @@ export default function AuthProvider(props) {
   const isTokenExpired = getTokenExpireAt < Date.now() / 1000;
 
 
-  // const [isAuthenticated, setIsAuthenticated] = useState(
-  //   !!getToken && !isTokenExpired
-  // );
-  const [isAuthenticated, setIsAuthenticated] = useState(true);
+  const [isAuthenticated, setIsAuthenticated] = useState(
+    !!getToken && !isTokenExpired
+  );
 
-  // const login = response => {
-  //   if (response.status === 200 && response.data.token) {
-  //     const token = response.data.token;
-  //     const decode_token = decode(token);
-  //     const expire_at = decode_token.exp;
+  //const [isAuthenticated, setIsAuthenticated] = useState(true);
 
-  //     const date_expiration = new Date(0);
-  //     date_expiration.setUTCSeconds(expire_at);
+  const login = response => {
+    if (response.status === 200 && response.data.token) {
+      const token = response.data.token;
+      const decode_token = decode(token);
+      const expire_at = decode_token.exp;
+      const refresh = response.data.refresh;
 
-  //     let secure = true;
+      const date_expiration = new Date(0);
+      date_expiration.setUTCSeconds(expire_at);
 
-  //     if (process.env.REACT_APP_ENV === 'dev') {
-  //       secure = false;
-  //     }
+      let secure = true;
 
-  //     cookies.set('BEARER', token, {
-  //       expires: date_expiration,
-  //       secure: secure,
-  //       httpOnly: true,
-  //       sameSite: true
-  //     });
+      if (process.env.REACT_APP_ENV === 'dev') {
+        secure = false;
+      }
 
-  //     localStorage.setItem('login', decode_token.login);
-  //     localStorage.setItem('uuid', decode_token.uu_id);
-  //     localStorage.setItem('roles', decode_token.roles);
-  //     localStorage.setItem('image', decode_token.image);
+      cookies.set('gniapiblogi', token, {
+        expires: date_expiration,
+        secure: secure,
+        httpOnly: true,
+        sameSite: true
+      });
 
-  //     localStorage.setItem('token', 'true');
-  //     localStorage.setItem('expire_at', expire_at);
+      cookies.set('gbr', refresh, {
+        expires: date_expiration,
+        secure: secure,
+        httpOnly: true,
+        sameSite: true
+      });
 
-  //     setIsAuthenticated(true);
+      localStorage.setItem('email', decode_token.login);
+      localStorage.setItem('uuid', decode_token.uu_id);
 
-  //     const newSocket = io(process.env.REACT_APP_IP_NODE, {
-  //       transports: ['websocket', 'polling'],
-  //       reconnection: false,
-  //       forceNew: true
-  //     });
-  //     setSocket(newSocket);
-  //   } else {
-  //     socket.disconnect();
-  //     setIsAuthenticated(false);
-  //   }
-  // };
+      localStorage.setItem('token', 'true');
+      localStorage.setItem('expire_at', expire_at);
 
-  // const logout = callback => {
-  //   socket.disconnect();
+      setIsAuthenticated(true);
 
-  //   cookies.remove('BEARER');
-  //   localStorage.removeItem('login');
-  //   localStorage.removeItem('uuid');
-  //   localStorage.removeItem('roles');
-  //   localStorage.removeItem('image');
-  //   localStorage.removeItem('token');
-  //   localStorage.removeItem('expire_at');
-  //   setIsAuthenticated(false);
+    } else {
+      setIsAuthenticated(false);
+    }
+  };
 
-  //   document.location.reload();
-  // };
+  const logout = callback => {
+
+    cookies.remove('gniapiblogi');
+    cookies.remove('gbr');
+    localStorage.removeItem('uuid');
+    localStorage.removeItem('token');
+    localStorage.removeItem('expire_at');
+    setIsAuthenticated(false);
+
+    document.location.reload();
+  };
 
   // const getRoles = () => {
   //   return localStorage.getItem('roles')
@@ -98,7 +95,9 @@ export default function AuthProvider(props) {
 
   const values = {
     isAuthenticated,
-    onAPIResponseError
+    onAPIResponseError,
+    login,
+    logout
   };
 
   return (
