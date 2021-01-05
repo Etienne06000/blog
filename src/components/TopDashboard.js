@@ -12,7 +12,7 @@ import Grid from '@material-ui/core/Grid';
 const useStyles = makeStyles({
   navigation: {
   	top: "auto", 
-  	bottom: 0, 
+  	top: 0, 
   	position: 'fixed',
   	left: 0,
   	right: 0,
@@ -20,7 +20,7 @@ const useStyles = makeStyles({
   },
 });
 
-function Navigation() {
+function TopDashboard() {
   	const classes = useStyles();
   	const [value, setValue] = React.useState('recents');
 
@@ -39,9 +39,6 @@ function Navigation() {
 		>		
 			<div className={classes.navigation}>
 			    <BottomNavigation value={value} onChange={handleChange} >
-					<Link to="/">
-							<BottomNavigationAction label="Recents" value="recents" icon={<HomeIcon />} />
-					</Link>
 					<Link to="/account">
 							<BottomNavigationAction label="Favorites" value="favorites" icon={<AccountCircleIcon />} />
 					</Link>   
@@ -51,4 +48,4 @@ function Navigation() {
   	);
 }
 
-export default Navigation;
+export default TopDashboard;

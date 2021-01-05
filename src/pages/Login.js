@@ -1,16 +1,11 @@
-import React, { useContext, useEffect } from 'react';
-import useAxios from 'axios-hooks';
+import React, { useContext, useState } from 'react';
+import { axios } from '../constants/API';
 import { withRouter } from 'react-router-dom';
-import { useSnackbar } from 'notistack';
 import Login from '../components/Authentification/LoginForm';
 import { makeStyles } from '@material-ui/core/styles';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Container from '@material-ui/core/Container';
-import IconButton from '@material-ui/core/IconButton';
-import CloseIcon from '@material-ui/icons/Close';
 import Paper from '@material-ui/core/Paper';
-import { Link } from 'react-router-dom';
-import Button from '@material-ui/core/Button';
 import { AuthContext } from '../contexts/AuthProvider';
 
 // Configuration du style
@@ -57,52 +52,23 @@ function LoginPage(props) {
   // Initialisation du Style
   const classes = useStyles();
 
-  // Initialisation Snackbar
-  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
-
-  // Initialisation POST API Administration E2time
-  const [
-    { loading: postLoading, error: postError, response: postResponse },
-    executePost
-  ] = useAxios(
-    {
-      url: '/login',
-      method: 'POST'
-    },
-    { manual: true }
-  );
-
   // Initialisation Hook useAuth()
   const { login, isAuthenticated } = useContext(AuthContext);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
-  useEffect(() => {
-    // Si on est pas encore authentifié on lance le processus d'authentification
-    if (postResponse && !isAuthenticated) {
-      login(postResponse);
-    }
-  }, [login, postResponse, isAuthenticated]);
-
-  if (postError) {
-    // Action Close sur la Snackbar
-    /* istanbul ignore next */
-    const action = key => (
-      <IconButton
-        onClick={() => {
-          closeSnackbar(key);
-        }}
-      >
-        <CloseIcon />
-      </IconButton>
-    );
-
-    if (postError.response) {
-      const messageError = postError.response.data.message.message;
-
-      enqueueSnackbar(messageError, {
-        variant: 'error',
-        action
-      });
-    }
+  function executePost(body) {
+    setLoading(true);
+    axios.post(`/login`, body.data)
+      .then(res => {
+        login(res);
+      })
+      .catch(
+        err => {
+          setError(err.response.data.message.message);
+          setLoading(false);
+        }
+      )    
   }
 
   if (isAuthenticated) {
@@ -118,11 +84,14 @@ function LoginPage(props) {
           title="Connexion"
           execute={executePost}
           loader={
-            postLoading && (
+            loading && (
               <CircularProgress size={24} className={classes.buttonProgress} />
             )
           }
         />
+        <div>
+          {error}
+        </ div>
       </Paper>
     </Container>
   );

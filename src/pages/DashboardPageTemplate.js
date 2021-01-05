@@ -5,6 +5,7 @@ import { RouteContext } from "../contexts/RouteProvider";
 import { makeStyles } from "@material-ui/core/styles";
 import { withRouter } from "react-router-dom";
 import Navigation from '../components/navigation.js';
+import TopDashboard from '../components/TopDashboard.js';
 
 // Configuration du style
 const useStyles = makeStyles((theme) => ({
@@ -43,6 +44,7 @@ function DashboardPageTemplate(props) {
     <div className={classes.root}>
       <main className={classes.content}>
         <Container maxWidth="lg" className={classes.container}>
+          {/*<TopDashboard />*/}
           <div>
             <header className={classes.header}>
               <Typography variant="h3" component="h2" className={classes.title}>

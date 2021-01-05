@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import decode from 'jwt-decode';
 import Cookies from 'universal-cookie';
+import { axios } from "../constants/API";
 
 export const AuthContext = React.createContext({});
 
@@ -11,48 +12,89 @@ export default function AuthProvider(props) {
 
   const getTokenExpireAt = localStorage.getItem('expire_at');
 
-  const isTokenExpired = getTokenExpireAt < Date.now() / 1000;
-
+  const isTokenExpired = Number(getTokenExpireAt) < Date.now() / 1000;
 
   const [isAuthenticated, setIsAuthenticated] = useState(
     !!getToken && !isTokenExpired
   );
 
+
+  useEffect(() => {
+    if (Number(getTokenExpireAt) !== 0 && isTokenExpired) {
+      console.log('refresh-token');
+      axios.post('/refresh-token')
+      .then((response) => {
+        login(response);
+      })
+      .catch(() => logout());
+    }
+  }, []);
+
+  axios.interceptors.response.use(
+    (response) => {
+      return response;
+    }, (err) => {
+      return new Promise((resolve, reject) => {
+        const originalReq = err.config;
+        if (err.response.status === 401 &&
+          err.config &&
+          !err.config.__isRetryRequest
+        ) {
+          originalReq.retry = true;
+
+          let res = axios
+          .post('/refresh-token')
+          .then((response) => {
+            login(response);
+            return axios(originalReq);
+          })
+          .catch(() => logout());
+
+          resolve(res);
+        }
+
+        return Promise.reject(err);
+      })
+    })
+
+
+
   //const [isAuthenticated, setIsAuthenticated] = useState(true);
 
-  const login = response => {
+  const login = (response) => {
     if (response.status === 200 && response.data.token) {
       const token = response.data.token;
       const decode_token = decode(token);
       const expire_at = decode_token.exp;
-      const refresh = response.data.refresh;
-
+      const refresh = response.data.data.refreshToken;
+      const refresh_expire_at = response.data.data.refreshExpire;
       const date_expiration = new Date(0);
+      const date_expiration_refresh = new Date(0);
       date_expiration.setUTCSeconds(expire_at);
-
+      date_expiration_refresh.setUTCSeconds(refresh_expire_at);
+      console.log('response.data');
+      console.log(response.data);
       let secure = true;
 
       if (process.env.REACT_APP_ENV === 'dev') {
         secure = false;
       }
 
-      cookies.set('gniapiblogi', token, {
-        expires: date_expiration,
-        secure: secure,
-        httpOnly: true,
-        sameSite: true
-      });
+      // cookies.set('gniapiblogi', token, {
+      //   expires: date_expiration,
+      //   secure: secure,
+      //   httpOnly: true,
+      //   sameSite: true
+      // });
+      // cookies.set('gbr', refresh, {
+      //   expires: date_expiration_refresh,
+      //   secure: false,
+      //   httpOnly: false,
+      //   sameSite: false
+      // });
 
-      cookies.set('gbr', refresh, {
-        expires: date_expiration,
-        secure: secure,
-        httpOnly: true,
-        sameSite: true
-      });
-
-      localStorage.setItem('email', decode_token.login);
-      localStorage.setItem('uuid', decode_token.uu_id);
-
+      localStorage.setItem('email', decode_token.email);
+      localStorage.setItem('uuid', decode_token.uuid);
       localStorage.setItem('token', 'true');
       localStorage.setItem('expire_at', expire_at);
 
@@ -64,10 +106,11 @@ export default function AuthProvider(props) {
   };
 
   const logout = callback => {
-
+    
     cookies.remove('gniapiblogi');
     cookies.remove('gbr');
     localStorage.removeItem('uuid');
+    localStorage.removeItem('email');
     localStorage.removeItem('token');
     localStorage.removeItem('expire_at');
     setIsAuthenticated(false);
@@ -93,14 +136,26 @@ export default function AuthProvider(props) {
     return displayError;
   };
 
+  // axios.interceptors.request.use(
+  //    config => {
+  //      console.log(config)
+  //    },
+  //    error => {
+  //      Promise.reject(error)
+  //    });
+
   const values = {
     isAuthenticated,
+    getTokenExpireAt,
+    isTokenExpired,
     onAPIResponseError,
     login,
     logout
   };
 
   return (
-    <AuthContext.Provider value={values}>{props.children}</AuthContext.Provider>
+    <AuthContext.Provider value={values}>
+      {props.children}
+    </AuthContext.Provider>
   );
 }

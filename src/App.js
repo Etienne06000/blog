@@ -12,14 +12,7 @@ function App() {
     <div className="App">
       <AuthProvider>
         <RouteProvider>
-          <SnackbarProvider
-            anchorOrigin={{
-              vertical: "bottom",
-              horizontal: "right",
-            }}
-          >
-            <Routes />
-          </SnackbarProvider>
+          <Routes />
         </ RouteProvider>
       </ AuthProvider>
     </div>

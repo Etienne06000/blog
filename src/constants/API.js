@@ -1,5 +1,5 @@
 import Axios from 'axios';
-import { configure } from 'axios-hooks';
+//import { configure } from 'axios-hooks';
 
 export const axios = Axios.create({
   baseURL: process.env.REACT_APP_BASE_URL,
@@ -19,4 +19,4 @@ export const axios = Axios.create({
 
 axios.defaults.withCredentials = 'include';
 
-configure({ axios });
+//configure({ axios });
