@@ -34,27 +34,33 @@ export default function AuthProvider(props) {
     (response) => {
       return response;
     }, (err) => {
-      return new Promise((resolve, reject) => {
-        const originalReq = err.config;
-        if (err.response.status === 401 &&
-          err.config &&
-          !err.config.__isRetryRequest
-        ) {
-          originalReq.retry = true;
+      if (err.config.url !== '/login') {      
+        return new Promise((resolve, reject) => {
+          const originalReq = err.config;
+          if (err.response.status === 401 &&
+            err.config &&
+            !err.config.__isRetryRequest &&
+            err.config.url !== '/login' &&
+            err.config.url !== '/refresh-token' &&
+            err.config.url !== '/inscriptions'
+          ) {
+            originalReq.retry = true;
 
-          let res = axios
-          .post('/refresh-token')
-          .then((response) => {
-            login(response);
-            return axios(originalReq);
-          })
-          .catch(() => logout());
+            let res = axios
+            .post('/refresh-token')
+            .then((response) => {
+              login(response);
+              return axios(originalReq);
+            })
+            .catch(() => logout());
 
-          resolve(res);
-        }
-
-        return Promise.reject(err);
-      })
+            resolve(res);
+          }
+          return Promise.reject(err);
+        
+        })
+      }
+          return Promise.reject(err);
     })
 
 
@@ -114,7 +120,8 @@ export default function AuthProvider(props) {
     localStorage.removeItem('token');
     localStorage.removeItem('expire_at');
     setIsAuthenticated(false);
-
+    cookies.remove('gniapiblogi');
+    cookies.remove('gbr');
     document.location.reload();
   };
 

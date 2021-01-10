@@ -7,6 +7,8 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import Container from '@material-ui/core/Container';
 import Paper from '@material-ui/core/Paper';
 import { AuthContext } from '../contexts/AuthProvider';
+import { Link } from 'react-router-dom';
+import Button from '@material-ui/core/Button';
 
 // Configuration du style
 const useStyles = makeStyles(theme => ({
@@ -62,6 +64,7 @@ function LoginPage(props) {
     axios.post(`/login`, body.data)
       .then(res => {
         login(res);
+        window.location.reload();
       })
       .catch(
         err => {
@@ -80,6 +83,13 @@ function LoginPage(props) {
       <header className={classes.header}>
       </header>
       <Paper className={classes.paper}>
+        <div>
+        <Link to="/signup" className={classes.link}>
+          <Button variant="outlined" color="secondary" className={classes.link}>
+            S'inscrire
+          </Button>
+        </Link>        
+        </div>      
         <Login
           title="Connexion"
           execute={executePost}
