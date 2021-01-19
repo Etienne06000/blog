@@ -1,11 +1,95 @@
-import React from 'react';
+import React, { useState, useContext } from 'react';
+import Signup from '../components/Authentification/SignupForm';
+import { makeStyles } from '@material-ui/core/styles';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import Paper from '@material-ui/core/Paper';
+import Container from '@material-ui/core/Container';
+import { axios } from '../constants/API';
+import { AuthContext } from '../contexts/AuthProvider';
+import Grid from '@material-ui/core/Grid';
 
-function Signup() {
+const useStyles = makeStyles(theme => ({
+  paper: {
+    padding: theme.spacing(3, 2),
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    marginTop: '25px',
+    marginBottom: '25px'
+  },
+  bg: {
+      background: theme.palette.primary.background,
+      minHeight: '100vh'
+    },
+
+}));
+
+function SignupPage(props) {
+  
+  const classes = useStyles();
+
+  const { login, isAuthenticated } = useContext(AuthContext);
+  const [loading, setLoading] = useState(false);
+  const [msg, setMsg] = useState(); 
+
+  function executePost(body) {
+    setMsg([]);
+    console.log(body.data);
+    setLoading(true);
+    axios.post(`/inscriptions`, body.data)
+      .then(res => {
+        login(res);
+        window.location.reload();
+      })
+      .catch(
+        err => {
+          let parseError = [];
+          let children = Object.values(err.response.data.errors.children);
+          children.forEach(child => {
+            if (child.errors) {
+              child.errors.forEach(error => {
+                parseError.push(error)
+              });
+            }
+          });
+          setMsg(parseError)   
+          setLoading(false);
+        }
+      )         
+  }
+
+  if (isAuthenticated) {
+    props.history.push('/');
+  }  
+
   return (
-    <div className="Signup">
-      <p>Inscription</p>
+    <div className={classes.bg}>
+      <Container component="main" maxWidth="xs">
+        <Grid container >
+        <Paper className={classes.paper}>
+            <Signup
+              title="Create a new account"
+              execute={executePost}
+              loader={
+                loading && (
+                  <CircularProgress size={24} className={classes.buttonProgress} />
+                )
+              }
+            />
+            <div>
+            {
+              msg ? (
+                msg.map(e => (
+                  <div>{e}</div>
+                ))
+              ) : ''
+            }
+            </div>
+        </Paper>
+        </Grid>
+      </Container>
     </div>
   );
 }
 
-export default Signup;
+export default SignupPage;

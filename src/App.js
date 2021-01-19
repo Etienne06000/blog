@@ -6,17 +6,21 @@ import RouteProvider from "./contexts/RouteProvider";
 import AuthProvider from "./contexts/AuthProvider";
 import "./constants/API";
 import { SnackbarProvider } from "notistack";
+import { ThemeProvider } from "@material-ui/styles";
+import Theme from "./assets/themes/Theme";
+import CssBaseline from '@material-ui/core/CssBaseline';
 
 function App() {
-  return (
-    <div className="App">
-      <AuthProvider>
-        <RouteProvider>
-          <Routes />
-        </ RouteProvider>
-      </ AuthProvider>
-    </div>
-  );
+	return (
+		<ThemeProvider theme={Theme}>
+			<CssBaseline />
+				<AuthProvider>
+				        <RouteProvider>
+				          <Routes />
+				        </RouteProvider>
+				</AuthProvider>
+		</ThemeProvider>
+	);
 }
 
 export default App;

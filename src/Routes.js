@@ -13,7 +13,12 @@ import Error404 from './pages/Error404.js'
 import DashboardPageTemplate from "./pages/DashboardPageTemplate";
 
 function Routes(props) {
-	const { isAuthenticated, isRouteAuthorized } = useContext(AuthContext);
+	const { 
+		isAuthenticated, 
+		isRouteAuthorized, 
+		getToken 
+	} = useContext(AuthContext);
+	
 	const { routes } = useContext(RouteContext);
 	return (
 	    <Router>
@@ -25,6 +30,8 @@ function Routes(props) {
 	        <Route exact={true} path="/signup" component={Signup} />
 
 	        {/*  dashboard routes */}
+	         
+	        {/* SI ON EST PAS AUTH MAIS QU IL Y A LE GETTOKEN METTRE UN LOADER*/}
 
 	        {routes.map(({ path, name, icon, Component }, key) => {
 	          return (
@@ -33,7 +40,7 @@ function Routes(props) {
 	              exact
 	              path={path}
 	              render={(routeRenderingProps) => {
-	                return isAuthenticated ? (
+	                return getToken ? (
 	                    <DashboardPageTemplate
 	                      path={path}
 	                      Component={Component}

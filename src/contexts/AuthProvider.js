@@ -19,22 +19,29 @@ export default function AuthProvider(props) {
   );
 
 
-  useEffect(() => {
-    if (Number(getTokenExpireAt) !== 0 && isTokenExpired) {
-      console.log('refresh-token');
-      axios.post('/refresh-token')
-      .then((response) => {
-        login(response);
-      })
-      .catch(() => logout());
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (Number(getTokenExpireAt) !== 0 && isTokenExpired) {
+  //     //console.log('refresh-token');
+  //     axios.post('/refresh-token')
+  //     .then((response) => {
+  //       login(response);
+  //     })
+  //     .catch(() => logout());
+  //   }
+  // }, []);
 
   axios.interceptors.response.use(
     (response) => {
       return response;
     }, (err) => {
-      if (err.config.url !== '/login') {      
+      if (err.response.status === 403) {
+        logout();
+        return;
+      }
+      if (err.config.url !== '/login' &&
+          err.config.url !== '/refresh-token' &&
+          err.config.url !== '/inscriptions' 
+        ) {      
         return new Promise((resolve, reject) => {
           const originalReq = err.config;
           if (err.response.status === 401 &&
@@ -78,8 +85,6 @@ export default function AuthProvider(props) {
       const date_expiration_refresh = new Date(0);
       date_expiration.setUTCSeconds(expire_at);
       date_expiration_refresh.setUTCSeconds(refresh_expire_at);
-      console.log('response.data');
-      console.log(response.data);
       let secure = true;
 
       if (process.env.REACT_APP_ENV === 'dev') {
@@ -143,21 +148,14 @@ export default function AuthProvider(props) {
     return displayError;
   };
 
-  // axios.interceptors.request.use(
-  //    config => {
-  //      console.log(config)
-  //    },
-  //    error => {
-  //      Promise.reject(error)
-  //    });
-
   const values = {
     isAuthenticated,
     getTokenExpireAt,
     isTokenExpired,
     onAPIResponseError,
     login,
-    logout
+    logout,
+    getToken
   };
 
   return (

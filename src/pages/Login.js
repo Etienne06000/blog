@@ -12,19 +12,19 @@ import Button from '@material-ui/core/Button';
 
 // Configuration du style
 const useStyles = makeStyles(theme => ({
-  '@global': {
-    html: {
-      height: '100vh'
-    },
-    body: {
-      background:
-        'linear-gradient(to right bottom, ' +
-        theme.palette.primary.main +
-        ', ' +
-        theme.palette.secondary.main +
-        ')'
-    }
-  },
+  // '@global': {
+  //   html: {
+  //     height: '100vh'
+  //   },
+  //   body: {
+  //     background:
+  //       'linear-gradient(to right bottom, ' +
+  //       theme.palette.primary.main +
+  //       ', ' +
+  //       theme.palette.secondary.main +
+  //       ')'
+  //   }
+  // },
   header: {
     padding: theme.spacing(8, 0),
     textAlign: 'center'

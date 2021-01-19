@@ -6,6 +6,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import { withRouter } from "react-router-dom";
 import Navigation from '../components/navigation.js';
 import TopDashboard from '../components/TopDashboard.js';
+import { AuthContext } from '../contexts/AuthProvider';
 
 // Configuration du style
 const useStyles = makeStyles((theme) => ({
@@ -40,6 +41,8 @@ const useStyles = makeStyles((theme) => ({
 
 function DashboardPageTemplate(props) {
   const classes = useStyles();
+  const { getToken, isAuthenticated } = useContext(AuthContext);
+
   return (
     <div className={classes.root}>
       <main className={classes.content}>
