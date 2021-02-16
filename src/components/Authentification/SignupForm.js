@@ -103,21 +103,7 @@ function Signup(props) {
       <Typography component="h1" variant="h5">
         {props.title}
       </Typography>
-      <form className={classes.form} onSubmit={handleSubmit}>
-        <FormControl className={classes.formControl}>
-          <InputLabel id="civility">Civility</InputLabel>
-          <Select
-            labelId="civility"
-            id="civility"
-            required
-            value={civility}
-            onChange={handleChangeCivility}
-          >
-            <MenuItem value="Mr">Mr</MenuItem>
-            <MenuItem value="Mrs">Mrs</MenuItem>
-            <MenuItem value="None">None</MenuItem>
-          </Select>
-        </FormControl>       
+      <form className={classes.form} onSubmit={handleSubmit}>     
         <TextField
           variant="outlined"
           margin="normal"
@@ -131,6 +117,20 @@ function Signup(props) {
           value={values.login || ''}
           onChange={handleChange}
         />
+        <FormControl className={classes.formControl}>
+          <InputLabel id="civility">Civility</InputLabel>
+          <Select
+            labelId="civility"
+            id="civility"
+            required
+            value={civility}
+            onChange={handleChangeCivility}
+          >
+            <MenuItem value="Mr">Mr</MenuItem>
+            <MenuItem value="Mrs">Mrs</MenuItem>
+            <MenuItem value="None">None</MenuItem>
+          </Select>
+        </FormControl>          
         <TextField
           variant="outlined"
           margin="normal"
@@ -141,7 +141,6 @@ function Signup(props) {
           name="email"
           autoComplete="Email"
           type="email"
-          autoFocus
           value={values.email || ''}
           onChange={handleChange}
         />

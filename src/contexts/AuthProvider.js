@@ -106,6 +106,7 @@ export default function AuthProvider(props) {
 
       localStorage.setItem('email', decode_token.email);
       localStorage.setItem('uuid', decode_token.uuid);
+      localStorage.setItem('uU', btoa(decode_token.login));
       localStorage.setItem('token', 'true');
       localStorage.setItem('expire_at', expire_at);
 
@@ -124,6 +125,7 @@ export default function AuthProvider(props) {
     localStorage.removeItem('email');
     localStorage.removeItem('token');
     localStorage.removeItem('expire_at');
+    localStorage.removeItem('uU');
     setIsAuthenticated(false);
     cookies.remove('gniapiblogi');
     cookies.remove('gbr');

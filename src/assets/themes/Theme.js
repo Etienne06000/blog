@@ -5,8 +5,18 @@ const Theme = createMuiTheme({
   palette: {
     primary: {
       main: '#435f88',
-      background: 'rgba(61,33,222, 0.8)',
+      background: 'rgba(0,0,0,0.04)',
     },
+    secondary: {
+      main: '#435f88',
+      background: 'rgb(36 36 39)',
+      //background: 'rgba(61,33,222, 1)',
+    },
+    typography: {
+      h2: {
+        color: "#fff"
+      }
+    }
   },
 });
 

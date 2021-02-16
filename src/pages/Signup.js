@@ -7,6 +7,7 @@ import Container from '@material-ui/core/Container';
 import { axios } from '../constants/API';
 import { AuthContext } from '../contexts/AuthProvider';
 import Grid from '@material-ui/core/Grid';
+import { Link } from 'react-router-dom';
 
 const useStyles = makeStyles(theme => ({
   paper: {
@@ -15,13 +16,21 @@ const useStyles = makeStyles(theme => ({
     flexDirection: 'column',
     alignItems: 'center',
     marginTop: '25px',
+    width: '100%'
+  },
+  paper1: {
+    marginTop: '25px'
+  },
+  paper2: {
     marginBottom: '25px'
   },
   bg: {
-      background: theme.palette.primary.background,
+      background: theme.palette.secondary.background,
       minHeight: '100vh'
-    },
-
+  },
+  link: {
+    textDecoration: 'none'
+  }
 }));
 
 function SignupPage(props) {
@@ -66,7 +75,7 @@ function SignupPage(props) {
     <div className={classes.bg}>
       <Container component="main" maxWidth="xs">
         <Grid container >
-        <Paper className={classes.paper}>
+        <Paper className={[classes.paper,classes.paper1]}>
             <Signup
               title="Create a new account"
               execute={executePost}
@@ -85,6 +94,14 @@ function SignupPage(props) {
               ) : ''
             }
             </div>
+        </Paper>
+        <Paper className={[classes.paper,classes.paper2]}>
+          <span>
+            Have an account? 
+            <Link to="/login" className={classes.link}>
+             <span> Log in</span>
+            </Link>
+          </span>
         </Paper>
         </Grid>
       </Container>

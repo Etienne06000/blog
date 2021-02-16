@@ -9,22 +9,14 @@ import Paper from '@material-ui/core/Paper';
 import { AuthContext } from '../contexts/AuthProvider';
 import { Link } from 'react-router-dom';
 import Button from '@material-ui/core/Button';
+import Grid from '@material-ui/core/Grid';
 
 // Configuration du style
 const useStyles = makeStyles(theme => ({
-  // '@global': {
-  //   html: {
-  //     height: '100vh'
-  //   },
-  //   body: {
-  //     background:
-  //       'linear-gradient(to right bottom, ' +
-  //       theme.palette.primary.main +
-  //       ', ' +
-  //       theme.palette.secondary.main +
-  //       ')'
-  //   }
-  // },
+  bg: {
+      background: theme.palette.secondary.background,
+      minHeight: '100vh'
+    },
   header: {
     padding: theme.spacing(8, 0),
     textAlign: 'center'
@@ -79,6 +71,7 @@ function LoginPage(props) {
   }
 
   return (
+    <div className={classes.bg}>
     <Container component="main" maxWidth="xs">
       <header className={classes.header}>
       </header>
@@ -104,6 +97,7 @@ function LoginPage(props) {
         </ div>
       </Paper>
     </Container>
+    </div>
   );
 }
 export default withRouter(LoginPage);
